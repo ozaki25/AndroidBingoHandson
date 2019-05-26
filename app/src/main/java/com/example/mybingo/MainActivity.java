@@ -1,6 +1,7 @@
 package com.example.mybingo;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -23,15 +24,21 @@ public class MainActivity extends AppCompatActivity {
 
         final MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
+        viewModel.getState().observe(this, new Observer<MainViewModel.State>() {
+            @Override
+            public void onChanged(MainViewModel.State state) {
+                numberView.setText("" + state.nextNumber);
+                historyView.setText(state.historyText);
+                if (state.isAllPicked) {
+                    button.setEnabled(false);
+                }
+            }
+        });
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int nextNumber = viewModel.pickNextNumber();
-                numberView.setText("" + nextNumber);
-                historyView.setText(viewModel.createHistoryText());
-                if (viewModel.isAllPicked()) {
-                    button.setEnabled(false);
-                }
+                viewModel.pickNextNumber();
             }
         });
     }
