@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private View button;
 
     private final Random random = new Random();
+    private final List<Integer> histories = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,24 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final int nextNumber = random.nextInt(75) + 1;
                 numberView.setText("" + nextNumber);
+
+                histories.add(nextNumber);
+                historyView.setText(createHistoryText());
             }
         });
+    }
+
+    private String createHistoryText() {
+        final StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        for (int history : histories) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                sb.append(", ");
+            }
+            sb.append(history);
+        }
+        return sb.toString();
     }
 }
